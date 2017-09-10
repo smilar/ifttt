@@ -1,0 +1,94 @@
+
+
+/**
+ * This sample demonstrates a simple skill built with the Amazon Alexa Skills
+ * nodejs skill development kit.
+ * This sample supports multiple lauguages. (en-US, en-GB, de-DE).
+ * The Intent Schema, Custom Slots and Sample Utterances for this skill, as well
+ * as testing instructions are located at https://github.com/alexa/skill-sample-nodejs-fact
+ **/
+
+'use strict';
+
+const Alexa = require('alexa-sdk');
+
+const APP_ID = 'jamie';  // TODO replace with your app ID (OPTIONAL).
+
+const languageStrings = {
+    'en': {
+        translation: {
+            MSG: [
+               '',
+            ],
+            SKILL_NAME: 'Jamie',
+            GET_MESSAGE: 'Hello Jamie. On behalf of the almost sixteen hundred technology professionals in Chicago we would like to welcome you to the Silicon Valley of J.P.Morgan Chase. <audio src="https://s3.amazonaws.com/lambda-function-bucket-us-east-1-1461278734454/Chicago.mp3" /> ... Sorry, that was my favorite song... Anyway Jamie, I have been following you in the news, you have some pretty good things to say about my company, Amazon. <break time="1s"/> . Your team here in Chicago wants to know what 2 or 3 things J.P.Morgan can learn from us. Also, is there anything I can relay to Jeff that we can learn from you ?',
+            
+            
+            GET_THANKS: 'Jamie. we are honored that you chose to spend time with the technology team during your Chicago bus tour. We want to invite you to participate in next years Global hacathon, wherever you are at the company. Of course, our preference is with us in the windy city. ',
+            HELP_MESSAGE: 'You can say tell me a ask Jamie, or, you can say exit... What can I help you with?',
+            HELP_REPROMPT: 'What can I help you with?',
+            STOP_MESSAGE: 'Goodbye!',
+        },
+    },
+    'en-US': {
+        translation: {
+            FACTS: [
+                'James Dimon is an American business executive.',
+                'He is chairman, president and chief executive officer of JPMorgan Chase, largest of the Big Four American banks.',
+                'Best CEOs list in the All-America Executive Team Survey from 2008 through 2011.',
+                'Dimon was born in New York City, to Theodore and Themis Dimon, one of three sons',
+                'In March 2000, Dimon became CEO of Bank One, the nations fifth largest bank.',
+                'JPMorgan Chase purchased Bank One in July 2004, Dimon became president and chief operating officer of the combined company',
+                'He majored in psychology and economics at Tufts University',
+                'He Enrolled at Harvard Business School, During the summer at Harvard, he worked at Goldman Sachs. He graduated in 1982, earning a Master of Business Administration degree as a Baker Scholar.',
+            ],
+            SKILL_NAME: 'Jamie',
+        },
+    }
+    
+};
+
+const handlers = {
+    'LaunchRequest': function () {
+        this.emit('GetMessage');
+    },
+    'QuestionIntent': function () {
+        this.emit('GetMessage');
+    },
+    'ThankyouIntent': function () {
+        this.emit('GetThanks');
+    },
+    'GetMessage': function () {      
+        // Create speech output
+        const speechOutput = this.t('GET_MESSAGE') ;
+        this.emit(':tellWithCard', speechOutput, this.t('SKILL_NAME'));
+    },
+    'GetThanks': function () {      
+        // Create speech output
+        const speechOutput = this.t('GET_THANKS') ;
+        this.emit(':tellWithCard', speechOutput, this.t('SKILL_NAME'));
+    },
+    'AMAZON.HelpIntent': function () {
+        const speechOutput = this.t('HELP_MESSAGE');
+        const reprompt = this.t('HELP_MESSAGE');
+        this.emit(':ask', speechOutput, reprompt);
+    },
+    'AMAZON.CancelIntent': function () {
+        this.emit(':tell', this.t('STOP_MESSAGE'));
+    },
+    'AMAZON.StopIntent': function () {
+        this.emit(':tell', this.t('STOP_MESSAGE'));
+    },
+    'Unhandled': function () {
+        this.emit(':ask', 'Sorry I didnt understand that. Say help for assistance.');
+    },
+};
+
+exports.handler = function (event, context) {
+    const alexa = Alexa.handler(event, context);
+    alexa.APP_ID = APP_ID;
+    // To enable string internationalization (i18n) features, set a resources object.
+    alexa.resources = languageStrings;
+    alexa.registerHandlers(handlers);
+    alexa.execute();
+};
